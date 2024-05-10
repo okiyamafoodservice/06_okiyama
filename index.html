@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <h1>
+    <img src="./images/kids_apollo_logo.png" alt="">
+  </h1>
+
+
+  <script type="module">
+    import * as THREE from "https://cdn.skypack.dev/three@0.132";
+    import OrbitControls from "https://cdn.skypack.dev/threejs-orbit-controls";
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      50,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 100;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // マウスで操作できるようにする
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    const texture = new THREE.TextureLoader().load("./images/frame.png");
+    const geometry = new THREE.ConeGeometry(18, 33, 17, 105, 3, 6);;
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+    });
+
+    const cone = new THREE.Mesh(geometry, material);
+    scene.add(cone);
+
+    const light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(0, 1, 1);
+    scene.add(light);
+
+    const pointLight = new THREE.PointLight(0xffffff);
+    scene.add(pointLight);
+
+    // スポットライトを作成
+    const spotLight1 = new THREE.SpotLight(0xffffff);
+    spotLight1.position.set(50, -50, 50); // スポットライトの位置を設定します。
+    spotLight1.target = cone; // スポットライトの目標をコーンに設定します。
+    scene.add(spotLight1);
+
+
+    const spotLight2 = new THREE.SpotLight(0xffffff);
+    spotLight2.position.set(-50, -50, -50); // スポットライトの位置を設定します。
+    spotLight2.target = cone; // スポットライトの目標をコーンに設定します。
+    scene.add(spotLight2);
+
+
+    const spotLight3 = new THREE.SpotLight(0xffffff);
+    spotLight3.position.set(-50, -50, -50); // スポットライトの位置を設定します。
+    spotLight3.target = cone; // スポットライトの目標をコーンに設定します。
+    scene.add(spotLight3);
+
+    function animate() {
+
+      spotLight1.position.x = Math.sin(Date.now() * 0.001);
+
+
+      // コーンの回転
+      cone.rotation.y += 0.05;
+
+      renderer.render(scene, camera);
+
+      requestAnimationFrame(animate);
+
+
+    }
+
+    animate();
+  </script>
+
+
+
+</body>
+
+</html>
